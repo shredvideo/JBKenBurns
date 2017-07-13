@@ -24,7 +24,7 @@
 
 #import "JBKenBurnsView.h"
 
-#define enlargeRatio 1.1
+#define enlargeRatio 1.
 #define imageBufer 3
 
 enum JBSourceMode {
@@ -149,37 +149,32 @@ enum JBSourceMode {
     UIImage *image = self.currentImage;
     UIImageView *imageView = nil;
     
-    float originX       = -1;
-    float originY       = -1;
-    float zoomInX       = -1;
-    float zoomInY       = -1;
-    float moveX         = -1;
-    float moveY         = -1;
+    CGFloat originX = -1;
+    CGFloat originY = -1;
+    CGFloat moveX = -1;
+    CGFloat moveY = -1;
+    CGFloat zoom = 1.1f;
     
-    float frameWidth    = _isLandscape ? self.bounds.size.width: self.bounds.size.height;
-    float frameHeight   = _isLandscape ? self.bounds.size.height: self.bounds.size.width;
+    CGFloat frameWidth    = _isLandscape ? self.bounds.size.width: self.bounds.size.height;
+    CGFloat frameHeight   = _isLandscape ? self.bounds.size.height: self.bounds.size.width;
     
-    float resizeRatio = [self getResizeRatioFromImage:image width:frameWidth height:frameHeight];
+    CGFloat resizeRatio = [self getResizeRatioFromImage:image width:frameWidth height:frameHeight];
     
     // Resize the image.
-    float optimusWidth  = (image.size.width * resizeRatio) * enlargeRatio;
-    float optimusHeight = (image.size.height * resizeRatio) * enlargeRatio;
+    CGFloat optimusWidth  = round((image.size.width * resizeRatio) * enlargeRatio);
+    CGFloat optimusHeight = round((image.size.height * resizeRatio) * enlargeRatio);
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, optimusWidth, optimusHeight)];
     imageView.backgroundColor = [UIColor blackColor];
     
     // Calcule the maximum move allowed.
-    float maxMoveX = optimusWidth - frameWidth;
-    float maxMoveY = optimusHeight - frameHeight;
+    CGFloat maxMoveX = optimusWidth - frameWidth;
+    CGFloat maxMoveY = optimusHeight - frameHeight;
     
-    float rotation = (arc4random() % 9) / 100;
     int moveType = arc4random() % 4;
-    
     switch (moveType) {
         case 0:
             originX = 0;
             originY = 0;
-            zoomInX = 1.25;
-            zoomInY = 1.25;
             moveX   = -maxMoveX;
             moveY   = -maxMoveY;
             break;
@@ -187,8 +182,6 @@ enum JBSourceMode {
         case 1:
             originX = 0;
             originY = frameHeight - optimusHeight;
-            zoomInX = 1.10;
-            zoomInY = 1.10;
             moveX   = -maxMoveX;
             moveY   = maxMoveY;
             break;
@@ -196,8 +189,6 @@ enum JBSourceMode {
         case 2:
             originX = frameWidth - optimusWidth;
             originY = 0;
-            zoomInX = 1.30;
-            zoomInY = 1.30;
             moveX   = maxMoveX;
             moveY   = -maxMoveY;
             break;
@@ -205,8 +196,6 @@ enum JBSourceMode {
         case 3:
             originX = frameWidth - optimusWidth;
             originY = frameHeight - optimusHeight;
-            zoomInX = 1.20;
-            zoomInY = 1.20;
             moveX   = maxMoveX;
             moveY   = maxMoveY;
             break;
@@ -215,8 +204,6 @@ enum JBSourceMode {
             NSLog(@"Unknown random number found in JBKenBurnsView _animate");
             originX = 0;
             originY = 0;
-            zoomInX = 1;
-            zoomInY = 1;
             moveX   = -maxMoveX;
             moveY   = -maxMoveY;
             break;
@@ -247,11 +234,9 @@ enum JBSourceMode {
     
     [self addSubview:imageView];
     
-    CGAffineTransform rotate    = CGAffineTransformMakeRotation(rotation);
-    CGAffineTransform moveRight = CGAffineTransformMakeTranslation(moveX, moveY);
-    CGAffineTransform combo1    = CGAffineTransformConcat(rotate, moveRight);
-    CGAffineTransform zoomIn    = CGAffineTransformMakeScale(zoomInX, zoomInY);
-    CGAffineTransform transform = CGAffineTransformConcat(zoomIn, combo1);
+    CGAffineTransform move = CGAffineTransformMakeTranslation(moveX, moveY);
+    CGAffineTransform zoomIn = CGAffineTransformMakeScale(zoom, zoom);
+    CGAffineTransform transform = CGAffineTransformConcat(zoomIn, move);
     
     CGAffineTransform zoomedTransform = transform;
     CGAffineTransform standardTransform = CGAffineTransformIdentity;
@@ -284,7 +269,7 @@ enum JBSourceMode {
     imageView.transform = startTransform;
     
     // Generates the animation
-    [UIView animateWithDuration:_showImageDuration + 2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+    [UIView animateWithDuration:_showImageDuration delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
      {
          imageView.transform = finishTransform;
          
