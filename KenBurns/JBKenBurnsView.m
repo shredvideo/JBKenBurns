@@ -38,7 +38,7 @@ enum JBSourceMode {
 @property (nonatomic, strong) NSMutableArray *imagesArray;
 @property (nonatomic, strong) NSTimer *nextImageTimer;
 
-@property (nonatomic, assign) CGFloat showImageDuration;
+@property (nonatomic, assign) NSTimeInterval showImageDuration;
 @property (nonatomic, assign) BOOL shouldLoop;
 @property (nonatomic, assign) BOOL isLandscape;
 @property (nonatomic, assign) enum JBSourceMode sourceMode;
@@ -72,18 +72,18 @@ enum JBSourceMode {
     self.zoomMode = JBZoomModeIn;
 }
 
-- (void)animateWithImagePaths:(NSArray *)imagePaths transitionDuration:(float)duration initialDelay:(float)delay loop:(BOOL)shouldLoop isLandscape:(BOOL)isLandscape
+- (void)animateWithImagePaths:(NSArray *)imagePaths transitionDuration:(NSTimeInterval)duration initialDelay:(NSTimeInterval)delay loop:(BOOL)shouldLoop isLandscape:(BOOL)isLandscape
 {
     _sourceMode = JBSourceModePaths;
     [self startAnimationsWithData:imagePaths transitionDuration:duration initialDelay:delay loop:shouldLoop isLandscape:isLandscape];
 }
 
-- (void)animateWithImages:(NSArray *)images transitionDuration:(float)duration initialDelay:(float)delay loop:(BOOL)shouldLoop isLandscape:(BOOL)isLandscape {
+- (void)animateWithImages:(NSArray *)images transitionDuration:(NSTimeInterval)duration initialDelay:(NSTimeInterval)delay loop:(BOOL)shouldLoop isLandscape:(BOOL)isLandscape {
     _sourceMode = JBSourceModeImages;
     [self startAnimationsWithData:images transitionDuration:duration initialDelay:delay loop:shouldLoop isLandscape:isLandscape];
 }
 
-- (void)startAnimationsWithData:(NSArray *)data transitionDuration:(float)duration initialDelay:(float)delay loop:(BOOL)shouldLoop isLandscape:(BOOL)isLandscape
+- (void)startAnimationsWithData:(NSArray *)data transitionDuration:(NSTimeInterval)duration initialDelay:(NSTimeInterval)delay loop:(BOOL)shouldLoop isLandscape:(BOOL)isLandscape
 {
     _imagesArray        = [data mutableCopy];
     _showImageDuration  = duration;
@@ -299,10 +299,10 @@ enum JBSourceMode {
     }
 }
 
-- (float)getResizeRatioFromImage:(UIImage *)image width:(float)frameWidth height:(float)frameHeight
+- (CGFloat)getResizeRatioFromImage:(UIImage *)image width:(float)frameWidth height:(float)frameHeight
 {
-    float widthRatio  = frameWidth / image.size.width;
-    float heightRatio = frameHeight / image.size.height;
+    CGFloat widthRatio  = frameWidth / image.size.width;
+    CGFloat heightRatio = frameHeight / image.size.height;
     
     return widthRatio > heightRatio ? widthRatio : heightRatio;
 }

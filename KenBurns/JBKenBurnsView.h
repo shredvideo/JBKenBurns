@@ -24,7 +24,6 @@
 
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 
 @class JBKenBurnsView;
 @protocol KenBurnsViewDelegate <NSObject>
@@ -61,8 +60,8 @@ typedef enum {
  @since 0.3
  */
 - (void)animateWithImagePaths:(NSArray *)imagePaths
-           transitionDuration:(float)time
-                 initialDelay:(float)delay
+           transitionDuration:(NSTimeInterval)time
+                 initialDelay:(NSTimeInterval)delay
                          loop:(BOOL)isLoop
                   isLandscape:(BOOL)isLandscape;
 
@@ -75,8 +74,8 @@ typedef enum {
  @since 0.3
  */
 - (void)animateWithImages:(NSArray *)images
-       transitionDuration:(float)time
-             initialDelay:(float)delay
+       transitionDuration:(NSTimeInterval)time
+             initialDelay:(NSTimeInterval)delay
                      loop:(BOOL)isLoop
               isLandscape:(BOOL)isLandscape;
 
